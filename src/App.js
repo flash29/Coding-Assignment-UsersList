@@ -1,26 +1,70 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{Component} from 'react';
+import CardList from './Components/CardList.js'
 import './App.css';
+import 'tachyons';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+    constructor(){
+        super();
+        this.state={
+            users:[],
+            darkmode:"lightbg"
+        }
+    }
+
+    componentDidMount() {
+        fetch('https://randomuser.me/api/?results=50')
+        .then(response=>response.json())
+        .then(response=>
+          {
+            this.setState({
+              users:response.results
+            })
+          }
+        );
+    }
+
+    modeChange=()=>{
+      if(this.state.darkmode==="lightbg"){
+        this.setState({darkmode:"darkbg"})
+      }
+      else{
+        this.setState({darkmode:"lightbg"})
+      }
+
+    }
+
+    render(){
+        return (
+
+          <div className="App">
+          {
+            this.state.darkmode==="darkbg"
+            ?
+            <div className="bg-black">
+                <p className="heading bg-light-gray">Users List </p>
+                <p className="dark pa10" onClick={this.modeChange}> Turn into light mode</p>
+                <CardList
+                users={this.state.users}
+                />
+            </div>
+            :
+            <div className="bg-white">
+              <p className="heading">Users List </p>
+              <p className="dark pa10" onClick={this.modeChange}> Turn into dark mode</p>
+              <CardList
+              users={this.state.users}
+              />
+            </div>
+
+          }
+
+
+
+          </div>
+        );
+    }
+
 }
 
 export default App;
